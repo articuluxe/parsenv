@@ -1,12 +1,14 @@
-;;; env-parse-test-common.el --- common utilities to test env-parse
+#!/bin/sh
+":"; exec "$EMACSX" --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; -*-
+;;; test_parsenv-utils.el --- test env parse utilties
 ;; Copyright (C) 2017  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-04 17:26:01 dharms>
+;; Modified Time-stamp: <2017-12-05 08:32:59 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
-;; URL: https://github.com/articuluxe/env-parse.git
+;; URL: https://github.com/articuluxe/parsenv.git
 ;; Package-Requires: ((emacs "24.4"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -21,28 +23,18 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ;;; Commentary:
-;; Common test functionality.
+;; Test parsenv utilities.
 ;;
 
 ;;; Code:
-;; transfer dependencies from argv into load-path
-(let ((lst (cdr argv))
-      add elt)
-  (setq argv nil)
-  (while lst
-    (setq elt (car lst))
-    (if add
-        (progn
-          (push elt load-path)
-          (setq add nil))
-      (unless
-          (setq add (string= elt "-L"))
-        (push elt argv)))
-    (setq lst (cdr lst))))
-(push (concat (file-name-directory load-file-name) "/..") load-path)
-(push (file-name-directory load-file-name) load-path)
+(load-file "test/parsenv-test-common.el")
+(require 'parsenv)
 
-(require 'ert)
-(setq debug-on-error t)
-;;; env-parse-test-common.el ends here
+(ert-deftest ert-parsenv-test-util ()
+  (should t))
+
+(ert-run-tests-batch-and-exit (car argv))
+
+;;; test_parsenv-utils.el ends here

@@ -1,14 +1,12 @@
-#!/bin/sh
-":"; exec "$EMACSX" --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; -*-
-;;; test_env-parser-utils.el --- test env parse utilties
+;;; parsenv.el --- parse .env files
 ;; Copyright (C) 2017  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-04 17:28:22 dharms>
+;; Modified Time-stamp: <2017-12-05 08:32:59 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
-;; URL: https://github.com/articuluxe/env-parse.git
+;; URL: https://github.com/articuluxe/parsenv.git
 ;; Package-Requires: ((emacs "24.4"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -25,16 +23,11 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; Test env-parse utilities.
+;; Parse .env files.
 ;;
 
 ;;; Code:
-(load-file "test/env-parse-test-common.el")
-(require 'env-parse)
+(require 'parsenv-utils)
 
-(ert-deftest ert-env-parse-test-util ()
-  (should t))
-
-(ert-run-tests-batch-and-exit (car argv))
-
-;;; test_env-parser-utils.el ends here
+(provide 'parsenv)
+;;; parsenv.el ends here

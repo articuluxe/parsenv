@@ -1,12 +1,12 @@
-;;; env-parse.el --- parse .env files
+;;; parsenv-test-common.el --- common utilities to test parsenv
 ;; Copyright (C) 2017  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-04 17:29:34 dharms>
+;; Modified Time-stamp: <2017-12-05 08:33:00 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
-;; URL: https://github.com/articuluxe/env-parse.git
+;; URL: https://github.com/articuluxe/parsenv.git
 ;; Package-Requires: ((emacs "24.4"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -21,13 +21,28 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 ;;; Commentary:
-;; Parse .env files.
+;; Common test functionality.
 ;;
 
 ;;; Code:
-(require 'env-parse-utils)
+;; transfer dependencies from argv into load-path
+(let ((lst (cdr argv))
+      add elt)
+  (setq argv nil)
+  (while lst
+    (setq elt (car lst))
+    (if add
+        (progn
+          (push elt load-path)
+          (setq add nil))
+      (unless
+          (setq add (string= elt "-L"))
+        (push elt argv)))
+    (setq lst (cdr lst))))
+(push (concat (file-name-directory load-file-name) "/..") load-path)
+(push (file-name-directory load-file-name) load-path)
 
-(provide 'env-parse)
-;;; env-parse.el ends here
+(require 'ert)
+(setq debug-on-error t)
+;;; parsenv-test-common.el ends here
