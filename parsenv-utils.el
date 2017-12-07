@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 05:40:20 dharms>
+;; Modified Time-stamp: <2017-12-07 05:43:48 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -65,8 +65,6 @@
 (defun parsenv-utils-transform-line (line)
   "Transform LINE by removing extraneous data."
   (thread-first line
-    (parsenv-utils-strip-comments)
-    (parsenv-utils-strip-continuation)
     (parsenv-utils-strip-export)
     (parsenv-utils-trim)
     ))
@@ -84,6 +82,11 @@ Removed lines will be combined with the next element."
       (setq result (cons elt result))
       (setq lst (cdr lst)))
     (nreverse result)))
+
+(defun parsenv-utils-transform-lines (lines)
+  "Conduct the proper transforms across all elements of LINES."
+  (let ((lst (mapcar 'parsenv-utils-strip-comments lines)))
+    (mapcar 'parsenv-utils-transform-line lst)))
 
 (provide 'parsenv-utils)
 ;;; parsenv-utils.el ends here
