@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 08:16:31 dharms>
+;; Modified Time-stamp: <2017-12-07 17:41:45 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -150,6 +150,18 @@
                   '("hello" "there\\" "you"))
                  '("hello" "thereyou")))
   )
+
+(ert-deftest ert-parsenv-test-util-extract-key-value ()
+  (should (equal (parsenv-utils-extract-key-value "")
+                 '("" . "")))
+  (should (equal (parsenv-utils-extract-key-value "key")
+                 '("key" . "")))
+  (should (equal (parsenv-utils-extract-key-value "key value")
+                 '("key value" . "")))
+  (should (equal (parsenv-utils-extract-key-value "key=value")
+                 '("key" . "value")))
+  )
+
 
 (ert-run-tests-batch-and-exit (car argv))
 

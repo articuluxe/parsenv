@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 08:16:47 dharms>
+;; Modified Time-stamp: <2017-12-07 17:43:19 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -68,6 +68,20 @@
     (parsenv-utils-strip-export)
     (parsenv-utils-trim)
     ))
+
+(defun parsenv-utils-extract-key-value (line)
+  "Extract any key=value pair present in LINE, as a cons (key . value).
+In the absence of a `=', the key will be set to the string's
+content, if any, and the value will be blank.  Note that we
+assume whitespace from the ends has been trimmed."
+  (if (string-match "^\\(.+?\\)=\\(.*\\)$" line)
+      (cons
+       (match-string-no-properties 1 line)
+       (match-string-no-properties 2 line))
+    (cons line "")))
+
+
+
 
 (defun parsenv-utils-consolidate-continuations (lst)
   "Return a list that is the result of removing continuations from LST.
