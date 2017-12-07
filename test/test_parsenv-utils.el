@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-05 17:44:58 dharms>
+;; Modified Time-stamp: <2017-12-07 05:40:44 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -122,6 +122,33 @@
                    "key=value"))
   (should (string= (parsenv-utils-strip-export " 	 export 	 key=value")
                    "key=value"))
+  )
+
+(ert-deftest ert-parsenv-test-util-consolidate-continuations ()
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '())
+                 '()))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello"))
+                 '("hello")))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello" "there"))
+                 '("hello" "there")))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello\\"))
+                 '("hello")))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello" "there\\"))
+                 '("hello" "there")))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello\\" "there"))
+                 '("hellothere")))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello\\" "there" "you"))
+                 '("hellothere" "you")))
+  (should (equal (parsenv-utils-consolidate-continuations
+                  '("hello" "there\\" "you"))
+                 '("hello" "thereyou")))
   )
 
 (ert-run-tests-batch-and-exit (car argv))
