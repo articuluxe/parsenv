@@ -3,11 +3,11 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-05 08:33:00 dharms>
+;; Modified Time-stamp: <2017-12-07 08:16:21 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "25))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
