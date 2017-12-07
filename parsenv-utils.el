@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 17:43:19 dharms>
+;; Modified Time-stamp: <2017-12-07 17:44:55 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -42,10 +42,6 @@
     (setq line (replace-match "" nil nil line 1)))
   line)
 
-(defun parsenv-utils-trim (line)
-  "Trim whitespace from beginning and end of LINE."
-  (string-trim line))
-
 (defun parsenv-utils-continuation-p (line)
   "Return non-nil if LINE ends in a continuation character `\'."
   (string-match-p "\\\\$" line))
@@ -66,7 +62,7 @@
   "Transform LINE by removing extraneous data."
   (thread-first line
     (parsenv-utils-strip-export)
-    (parsenv-utils-trim)
+    (string-trim)
     ))
 
 (defun parsenv-utils-extract-key-value (line)
