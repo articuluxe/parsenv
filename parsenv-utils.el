@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 17:44:55 dharms>
+;; Modified Time-stamp: <2017-12-07 17:50:14 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -76,7 +76,13 @@ assume whitespace from the ends has been trimmed."
        (match-string-no-properties 2 line))
     (cons line "")))
 
-
+(defun parsenv-utils-delimited-by-p (line char)
+  "Return non-nil if LINE is delimited at both ends by CHAR.
+The return value will be the string with the delimiters removed.
+It is assumed that the input has already had whitespace trimmed."
+  (let ((fmt (format "^%c\\(.*\\)%c$" char char)))
+    (and (string-match fmt line)
+         (match-string-no-properties 1 line))))
 
 
 (defun parsenv-utils-consolidate-continuations (lst)

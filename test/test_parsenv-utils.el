@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 17:41:45 dharms>
+;; Modified Time-stamp: <2017-12-07 17:53:51 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -162,6 +162,17 @@
                  '("key" . "value")))
   )
 
+(ert-deftest ert-parsenv-test-util-delimited-by-p ()
+  (should (not (parsenv-utils-delimited-by-p "" ?')))
+  (should (not (parsenv-utils-delimited-by-p "abc" ?')))
+  (should (not (parsenv-utils-delimited-by-p "'abc" ?')))
+  (should (not (parsenv-utils-delimited-by-p "abc'" ?')))
+  (should (not (parsenv-utils-delimited-by-p "\"abc\"" ?')))
+  (should (not (string= (parsenv-utils-delimited-by-p "'abc'" ?\")
+                        "abc")))
+  (should (string= (parsenv-utils-delimited-by-p "'abc'" ?')
+                   "abc"))
+  )
 
 (ert-run-tests-batch-and-exit (car argv))
 
