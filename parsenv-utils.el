@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-07 17:50:14 dharms>
+;; Modified Time-stamp: <2017-12-07 17:56:37 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -69,7 +69,8 @@
   "Extract any key=value pair present in LINE, as a cons (key . value).
 In the absence of a `=', the key will be set to the string's
 content, if any, and the value will be blank.  Note that we
-assume whitespace from the ends has been trimmed."
+assume whitespace from the ends has been trimmed.  Note also that
+the value can be left blank even if `=' is present."
   (if (string-match "^\\(.+?\\)=\\(.*\\)$" line)
       (cons
        (match-string-no-properties 1 line)
