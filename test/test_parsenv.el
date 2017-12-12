@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-12 09:21:10 dharms>
+;; Modified Time-stamp: <2017-12-12 17:51:21 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -225,6 +225,38 @@
     (should (string= (getenv "key2") "initial"))
     (should (string= (getenv "key3") "value"))
     (should (string= (getenv "missing") nil))
+    )
+  )
+
+(ert-deftest ert-parsenv-test-full ()
+  (let ((process-environment nil)
+        (lst '("#This is a comment"
+               "export	key=value"
+               "export key2=value2  #comment"
+               " export key3=\\"
+               "value3  #"
+               )))
+    (parsenv-parse-lines (parsenv-transform-lines lst))
+    (should (string= (getenv "missing") nil))
+    (should (string= (getenv "key") "value"))
+    (should (string= (getenv "key2") "value2"))
+    (should (string= (getenv "key3") "value3"))
+    )
+  (let ((process-environment '("orig=initial"))
+        (lst '("#Comment"
+               "export  key1=$orig	"
+               "export	key2=\"$orig\" "
+               "export key3='$orig'"
+               "export key4=\"my${orig}value\""
+               " export key5=$key2   "
+               )))
+    (parsenv-parse-lines (parsenv-transform-lines lst))
+    (should (string= (getenv "missing") nil))
+    (should (string= (getenv "key1") "initial"))
+    (should (string= (getenv "key2") "initial"))
+    (should (string= (getenv "key3") "$orig"))
+    (should (string= (getenv "key4") "myinitialvalue"))
+    (should (string= (getenv "key5") "initial"))
     )
   )
 
