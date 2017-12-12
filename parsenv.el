@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-08 08:04:40 dharms>
+;; Modified Time-stamp: <2017-12-12 09:22:04 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -28,6 +28,7 @@
 
 ;;; Code:
 (require 'subr-x)
+(require 'seq)
 
 (defun parsenv-read-file-into-list-of-lines (file)
   "Read FILE into a list of strings split line by line."
@@ -66,16 +67,16 @@
     ))
 
 (defun parsenv-extract-key-value (line)
-  "Extract any key=value pair present in LINE, as a cons (key . value).
+  "Extract any key=value pair present in LINE, as a list (key value).
 In the absence of a `=', the key will be set to the string's
 content, if any, and the value will be blank.  Note that we
 assume whitespace from the ends has been trimmed.  Note also that
 the value can be left blank even if `=' is present."
   (if (string-match "^\\(.+?\\)=\\(.*\\)$" line)
-      (cons
+      (list
        (match-string-no-properties 1 line)
        (match-string-no-properties 2 line))
-    (cons line "")))
+    (list line "")))
 
 (defun parsenv-delimited-by-p (line char)
   "Return non-nil if LINE is delimited at both ends by CHAR.
@@ -84,7 +85,6 @@ It is assumed that the input has already had whitespace trimmed."
   (let ((fmt (format "^%c\\(.*\\)%c$" char char)))
     (and (string-match fmt line)
          (match-string-no-properties 1 line))))
-
 
 (defun parsenv-consolidate-continuations (lst)
   "Return a list that is the result of removing continuations from LST.
@@ -103,7 +103,25 @@ Removed lines will be combined with the next element."
 (defun parsenv-transform-lines (lines)
   "Conduct the proper transforms across all elements of LINES."
   (let ((lst (mapcar 'parsenv-strip-comments lines)))
-    (mapcar 'parsenv-transform-line lst)))
+    (mapcar 'parsenv-transform-line
+            (parsenv-consolidate-continuations lst))))
+
+(defun parsenv-parse-lines (lines)
+  "Change the environment as directed by each line in LINES."
+  (let (val)
+    (dolist (line lines)
+      (seq-let [key value] (parsenv-extract-key-value line)
+        (cond ((or (null value) (string-empty-p value))
+               (setenv key))
+              ((setq val (parsenv-delimited-by-p value ?\"))
+               (setenv key val t))
+              ((setq val (parsenv-delimited-by-p value ?'))
+               (setenv key val nil))
+              (t (setenv key value t)))))))
+
+
+
+
 
 (defun parsenv-load-env-vars-from-file (file)
   "Load each line from FILE, of the form `var=val'.

@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-08 08:12:12 dharms>
+;; Modified Time-stamp: <2017-12-12 09:21:10 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -114,13 +114,13 @@
                    "key=value"))
   (should (string= (parsenv-strip-export " export key=value")
                    "key=value"))
-  (should (string= (parsenv-strip-export "	export key=value")
+  (should (string= (parsenv-strip-export "  export key=value")
                    "key=value"))
   (should (string= (parsenv-strip-export "export    key=value")
                    "key=value"))
-  (should (string= (parsenv-strip-export "export	key=value")
+  (should (string= (parsenv-strip-export "export    key=value")
                    "key=value"))
-  (should (string= (parsenv-strip-export " 	 export 	 key=value")
+  (should (string= (parsenv-strip-export "   export      key=value")
                    "key=value"))
   )
 
@@ -153,15 +153,15 @@
 
 (ert-deftest ert-parsenv-test-extract-key-value ()
   (should (equal (parsenv-extract-key-value "")
-                 '("" . "")))
+                 '("" "")))
   (should (equal (parsenv-extract-key-value "key")
-                 '("key" . "")))
+                 '("key" "")))
   (should (equal (parsenv-extract-key-value "key value")
-                 '("key value" . "")))
+                 '("key value" "")))
   (should (equal (parsenv-extract-key-value "key=value")
-                 '("key" . "value")))
+                 '("key" "value")))
   (should (equal (parsenv-extract-key-value "key=")
-                 '("key" . "")))
+                 '("key" "")))
   )
 
 (ert-deftest ert-parsenv-test-delimited-by-p ()
@@ -174,6 +174,58 @@
                         "abc")))
   (should (string= (parsenv-delimited-by-p "'abc'" ?')
                    "abc"))
+  )
+
+(ert-deftest ert-parsenv-test-parse-environment ()
+  (let ((process-environment nil))
+    (parsenv-parse-lines '())
+    (should (equal process-environment
+                   '()
+                   )))
+  (let ((process-environment nil))
+    (parsenv-parse-lines '("hello"))
+    (should (equal process-environment
+                   '("hello")
+                   )))
+  (let ((process-environment nil))
+    (parsenv-parse-lines '("hello="))
+    (should (equal process-environment
+                   '("hello")
+                   )))
+  (let ((process-environment nil))
+    (parsenv-parse-lines '("hello=there"))
+    (should (equal process-environment
+                   '("hello=there")
+                   )))
+  (let ((process-environment nil))
+    (parsenv-parse-lines '("hello=there" "key=value" "alone"))
+    (should (equal process-environment
+                   '("alone"
+                     "key=value"
+                     "hello=there")
+                   ))
+    (should (string= (getenv "hello") "there"))
+    (should (string= (getenv "key") "value"))
+    (should (string= (getenv "alone") nil))
+    )
+
+  (let ((process-environment '("orig=initial")))
+    (parsenv-parse-lines '("key=value"
+                           "key2=\"$orig\""
+                           "key3=$key"
+                           ))
+    (should (equal process-environment
+                   '("key3=value"
+                     "key2=initial"
+                     "key=value"
+                     "orig=initial"
+                     )))
+    (should (string= (getenv "orig") "initial"))
+    (should (string= (getenv "key") "value"))
+    (should (string= (getenv "key2") "initial"))
+    (should (string= (getenv "key3") "value"))
+    (should (string= (getenv "missing") nil))
+    )
   )
 
 (ert-run-tests-batch-and-exit (car argv))
