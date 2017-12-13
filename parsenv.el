@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-13 17:30:48 dharms>
+;; Modified Time-stamp: <2017-12-13 17:49:42 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -140,6 +140,7 @@ This should be executed once after setting the PATH, as the final
 step in the init process."
   (setq exec-path
         (append
+         ;; todo: does parse-colon-path do the right thing on win32?
          (parse-colon-path (getenv "PATH"))
          (list (convert-standard-filename exec-directory)))))
 
