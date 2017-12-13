@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-12 17:51:21 dharms>
+;; Modified Time-stamp: <2017-12-13 08:32:25 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -234,13 +234,15 @@
                "export	key=value"
                "export key2=value2  #comment"
                " export key3=\\"
-               "value3  #"
+               "value3  # \\not a continuation"
+               "export key4=fourth\\ "
                )))
     (parsenv-parse-lines (parsenv-transform-lines lst))
     (should (string= (getenv "missing") nil))
     (should (string= (getenv "key") "value"))
     (should (string= (getenv "key2") "value2"))
     (should (string= (getenv "key3") "value3"))
+    (should (string= (getenv "key4") "fourth\\"))
     )
   (let ((process-environment '("orig=initial"))
         (lst '("#Comment"

@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-12 09:22:04 dharms>
+;; Modified Time-stamp: <2017-12-13 17:30:48 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -29,13 +29,6 @@
 ;;; Code:
 (require 'subr-x)
 (require 'seq)
-
-(defun parsenv-read-file-into-list-of-lines (file)
-  "Read FILE into a list of strings split line by line."
-  (interactive "f")
-  (with-temp-buffer
-    (insert-file-contents file)
-    (split-string (buffer-string) "\n" t)))
 
 (defun parsenv-strip-comments (line)
   "Strip comments from LINE."
@@ -64,6 +57,7 @@
   (thread-first line
     (parsenv-strip-export)
     (string-trim)
+    (convert-standard-filename)
     ))
 
 (defun parsenv-extract-key-value (line)
@@ -106,6 +100,15 @@ Removed lines will be combined with the next element."
     (mapcar 'parsenv-transform-line
             (parsenv-consolidate-continuations lst))))
 
+;;;###autoload
+(defun parsenv-read-file-into-list-of-lines (file)
+  "Read FILE into a list of strings split line by line."
+  (interactive "f")
+  (with-temp-buffer
+    (insert-file-contents file)
+    (split-string (buffer-string) "\n" t)))
+
+;;;###autoload
 (defun parsenv-parse-lines (lines)
   "Change the environment as directed by each line in LINES."
   (let (val)
@@ -119,29 +122,26 @@ Removed lines will be combined with the next element."
                (setenv key val nil))
               (t (setenv key value t)))))))
 
-
-
-
-
-(defun parsenv-load-env-vars-from-file (file)
-  "Load each line from FILE, of the form `var=val'.
-For each line, sets environment variable `var' equal to `val'."
+;;;###autoload
+(defun parsenv-load-env (file)
+  "Load any environment variables from FILE.
+If a line matches the format of \"export var=value\", then
+`value' is assigned to var.  The `export' part is optional.  Also
+`value' can be missing or empty in order to remove the value of
+`var'."
   (interactive "fLoad environment variables from file: ")
-  (mapc (lambda(line)
-          (when (string-match "\\(.+\\)=\\(.*\\)" line)
-            (setenv (match-string-no-properties 1 line)
-                    (substitute-env-vars
-                     (match-string-no-properties 2 line)))))
-        (parsenv-read-file-into-list-of-lines file)))
+  (let ((lst (parsenv-read-file-into-list-of-lines file)))
+    (parsenv-parse-lines (parsenv-transform-lines lst))))
 
-(defun parsenv-load-env-var-from-file (var file &optional sep)
-  "Load into the environment variable VAR each line from FILE.
-Existing values will be maintained.  SEP is an optional separator."
-  (interactive)
-  (unless sep (setq sep path-separator))
-  (setenv var (concat (mapconcat 'convert-standard-filename
-                                 (parsenv-read-file-into-list-of-lines file)
-                                 sep) sep (getenv var))))
+;;;###autoload
+(defun parsenv-adjust-exec-path ()
+  "Adjust `exec-path' based on the environment variable `PATH'.
+This should be executed once after setting the PATH, as the final
+step in the init process."
+  (setq exec-path
+        (append
+         (parse-colon-path (getenv "PATH"))
+         (list (convert-standard-filename exec-directory)))))
 
 (provide 'parsenv)
 ;;; parsenv.el ends here
