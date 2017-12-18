@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-13 17:45:44 dharms>
+;; Modified Time-stamp: <2017-12-18 08:13:05 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -264,6 +264,18 @@
     (should (string= (getenv "key4") "myinitialvalue"))
     (should (string= (getenv "key5") "initial"))
     )
+  )
+
+(ert-deftest ert-parsenv-test-adjust-exec-path ()
+  (let ((process-environment nil))
+    (setenv "PATH" "one:two:three")
+    (parsenv-adjust-exec-path)
+    (should (equal exec-path
+                     `("one/"
+                       "two/"
+                       "three/"
+                       ,(file-name-as-directory exec-directory)
+                       ))))
   )
 
 (ert-run-tests-batch-and-exit (car argv))
