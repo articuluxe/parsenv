@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-14 14:29:18 dharms>
+;; Modified Time-stamp: <2017-12-19 14:09:00 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -130,8 +130,9 @@ If a line matches the format of \"export var=value\", then
 `value' can be missing or empty in order to remove the value of
 `var'."
   (interactive "fLoad environment variables from file: ")
-  (let ((lst (parsenv-read-file-into-list-of-lines file)))
-    (parsenv-parse-lines (parsenv-transform-lines lst))))
+  (when (file-exists-p file)
+    (let ((lst (parsenv-read-file-into-list-of-lines file)))
+      (parsenv-parse-lines (parsenv-transform-lines lst)))))
 
 ;;;###autoload
 (defun parsenv-adjust-exec-path ()
