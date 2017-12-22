@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-19 14:09:00 dharms>
+;; Modified Time-stamp: <2017-12-22 08:32:47 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -57,7 +57,6 @@
   (thread-first line
     (parsenv-strip-export)
     (string-trim)
-    (convert-standard-filename)
     ))
 
 (defun parsenv-extract-key-value (line)
@@ -117,10 +116,10 @@ Removed lines will be combined with the next element."
         (cond ((or (null value) (string-empty-p value))
                (setenv key))
               ((setq val (parsenv-delimited-by-p value ?\"))
-               (setenv key val t))
+               (setenv key (convert-standard-filename val) t))
               ((setq val (parsenv-delimited-by-p value ?'))
-               (setenv key val nil))
-              (t (setenv key value t)))))))
+               (setenv key (convert-standard-filename val) nil))
+               (t (setenv key (convert-standard-filename value) t)))))))
 
 ;;;###autoload
 (defun parsenv-load-env (file)
