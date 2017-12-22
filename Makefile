@@ -1,4 +1,4 @@
-EMACS=$(EMACSX) -nw
+EMACS=$(EDITOR)
 ROOT=$(HOME)/.emacs.d
 DEPS=-L `pwd`
 ELC := $(patsubst %.el,%.elc,$(wildcard *.el))
