@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-01-02 15:27:38 dan.harms>
+;; Modified Time-stamp: <2018-01-02 15:31:22 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -54,10 +54,12 @@
 
 (defun parsenv-transform-line (line)
   "Transform LINE by removing extraneous data."
-  (thread-first line
-    (parsenv-strip-export)
-    (string-trim)
-    ))
+  (if (fboundp 'thread-first)
+      (thread-first line
+        (parsenv-strip-export)
+        (string-trim)
+        )
+    (string-trim (parsenv-strip-export line))))
 
 (defun parsenv-extract-key-value (line)
   "Extract any key=value pair present in LINE, as a list (key value).
