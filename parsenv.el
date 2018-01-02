@@ -1,9 +1,9 @@
 ;;; parsenv.el --- parse .env files
-;; Copyright (C) 2017  Dan Harms (dharms)
+;; Copyright (C) 2017-2018  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-22 08:32:47 dharms>
+;; Modified Time-stamp: <2018-01-02 15:27:38 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -113,13 +113,17 @@ Removed lines will be combined with the next element."
   (let (val)
     (dolist (line lines)
       (seq-let [key value] (parsenv-extract-key-value line)
-        (cond ((or (null value) (string-empty-p value))
+        (cond ((or (null key) (string-empty-p key))
+               ;; make sure not to set an empty variable, which can have
+               ;; insidious effects in certain environments
+               nil)
+              ((or (null value) (string-empty-p value))
                (setenv key))
               ((setq val (parsenv-delimited-by-p value ?\"))
                (setenv key (convert-standard-filename val) t))
               ((setq val (parsenv-delimited-by-p value ?'))
                (setenv key (convert-standard-filename val) nil))
-               (t (setenv key (convert-standard-filename value) t)))))))
+              (t (setenv key (convert-standard-filename value) t)))))))
 
 ;;;###autoload
 (defun parsenv-load-env (file)
