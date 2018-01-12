@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-01-02 15:31:22 dan.harms>
+;; Modified Time-stamp: <2018-01-13 07:25:15 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -31,10 +31,20 @@
 (require 'seq)
 
 (defun parsenv-strip-comments (line)
-  "Strip comments from LINE."
-  (while (string-match ".*?\\(#.*\\)$" line)
-    (setq line (replace-match "" nil nil line 1)))
-  line)
+  "Strip comments from LINE.
+Comment characters included in a quoted
+string (i.e. \"a-#-variable\") are not treaded as comment
+delimiters."
+  (catch 'return
+    (let ((idx 0) (quoted nil))
+      (while (setq idx (string-match "#\\|\"" line idx))
+        (cond ((eq (aref line idx) ?\")
+               (setq quoted (not quoted)))
+              ((eq (aref line idx) ?#)
+               (unless quoted
+                 (throw 'return (substring line 0 idx)))))
+        (setq idx (match-end 0))))
+    line))
 
 (defun parsenv-continuation-p (line)
   "Return non-nil if LINE ends in a continuation character `\'."

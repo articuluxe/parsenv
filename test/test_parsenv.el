@@ -1,11 +1,11 @@
 #!/bin/sh
 ":"; exec "$VISUAL" --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; -*-
 ;;; test_parsenv.el --- test env parse utilties
-;; Copyright (C) 2017  Dan Harms (dharms)
+;; Copyright (C) 2017-2018  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2017-12-22 08:35:19 dharms>
+;; Modified Time-stamp: <2018-01-12 07:42:37 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -57,8 +57,20 @@
                    ""))
   (should (string= (parsenv-strip-comments " #Hello")
                    " "))
-  (should (string= (parsenv-strip-comments " # Hello")
-                   " "))
+  (should (string= (parsenv-strip-comments "\"Hello\"")
+                   "\"Hello\""))
+  (should (string= (parsenv-strip-comments "\"Hello\"")
+                   "\"Hello\""))
+  (should (string= (parsenv-strip-comments "\"Hello#\"")
+                   "\"Hello#\""))
+  (should (string= (parsenv-strip-comments "\"Hello#there\" #theend")
+                   "\"Hello#there\" "))
+  (should (string= (parsenv-strip-comments " \"Hello # there \"  # a comment ")
+                   " \"Hello # there \"  "))
+  (should (string= (parsenv-strip-comments " \"########\"########")
+                   " \"########\""))
+  (should (string= (parsenv-strip-comments " \"##\" \"##\"# a comment ")
+                   " \"##\" \"##\""))
   )
 
 (ert-deftest ert-parsenv-test-continuation-p ()
@@ -246,7 +258,7 @@
     (should (string= (getenv "key3") "value3"))
     (should (string= (getenv "key4") "fourth\\"))
     (should (string= (getenv "key5") "a-"))
-;todo    (should (string= (getenv "key6") "no-#-comment-here"))
+    (should (string= (getenv "key6") "no-#-comment-here"))
     )
   (let ((process-environment '("orig=initial"))
         (lst '("#Comment"
