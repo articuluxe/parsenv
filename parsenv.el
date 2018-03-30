@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-01-13 07:25:15 dharms>
+;; Modified Time-stamp: <2018-03-30 06:34:28 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -33,7 +33,7 @@
 (defun parsenv-strip-comments (line)
   "Strip comments from LINE.
 Comment characters included in a quoted
-string (i.e. \"a-#-variable\") are not treaded as comment
+string (i.e. \"a-#-variable\") are not treated as comment
 delimiters."
   (catch 'return
     (let ((idx 0) (quoted nil))
