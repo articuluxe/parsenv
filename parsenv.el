@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-05-08 15:57:45 dan.harms>
+;; Modified Time-stamp: <2018-05-08 16:32:09 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -66,11 +66,14 @@ Also supported are tcsh's `setenv' and dos's `set'."
 (defun parsenv-transform-line (line)
   "Transform LINE by removing extraneous data."
   (if (fboundp 'thread-first)
-      (thread-first line
-        (parsenv-strip-export)
-        (string-trim)
-        )
-    (string-trim (parsenv-strip-export line))))
+      (let ((res
+             (thread-first line
+               (parsenv-strip-export)
+               (string-trim))))
+        ;; if surrounded by quotes, remove them
+        (or (parsenv-delimited-by-p res ?\") res))
+    (let ((res (string-trim (parsenv-strip-export line))))
+      (or (parsenv-delimited-by-p res ?\") res))))
 
 (defun parsenv-extract-key-value (line)
   "Extract any key=value pair present in LINE, as a list (key value).

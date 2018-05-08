@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-05-08 16:18:27 dan.harms>
+;; Modified Time-stamp: <2018-05-08 16:19:08 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -322,6 +322,7 @@
     (should (string= (getenv "orig") "new"))
     (should (string= (getenv "key1") "value1"))
     (should (string= (getenv "key2") "value2"))
+    (should (string= (getenv "key3") "value3"))
     (should (string= (getenv "key4") nil))
     )
   )
