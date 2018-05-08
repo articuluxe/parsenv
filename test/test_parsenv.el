@@ -5,7 +5,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-01-12 07:42:37 dharms>
+;; Modified Time-stamp: <2018-05-08 16:18:27 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -134,6 +134,40 @@
                    "key=value"))
   (should (string= (parsenv-strip-export "   export      key=value")
                    "key=value"))
+  )
+
+(ert-deftest ert-parsenv-test-strip-setenv ()
+  (should (string= (parsenv-strip-export "setenv key")
+                   "key"))
+  (should (string= (parsenv-strip-export "setenv key ")
+                   "key "))
+  (should (string= (parsenv-strip-export " setenv key ")
+                   "key "))
+  (should (string= (parsenv-strip-export "setenv key value")
+                   "key value"))
+  (should (string= (parsenv-strip-export " setenv key value")
+                   "key value"))
+  (should (string= (parsenv-strip-export "setenv key value ")
+                   "key value "))
+  (should (string= (parsenv-strip-export " setenv key value ")
+                   "key value "))
+  )
+
+(ert-deftest ert-parsenv-test-strip-set ()
+  (should (string= (parsenv-strip-export "set key")
+                   "key"))
+  (should (string= (parsenv-strip-export "set key ")
+                   "key "))
+  (should (string= (parsenv-strip-export " set key")
+                   "key"))
+  (should (string= (parsenv-strip-export "set key=value")
+                   "key=value"))
+  (should (string= (parsenv-strip-export " set key=value")
+                   "key=value"))
+  (should (string= (parsenv-strip-export "set key=value ")
+                   "key=value "))
+  (should (string= (parsenv-strip-export " set key=value ")
+                   "key=value "))
   )
 
 (ert-deftest ert-parsenv-test-consolidate-continuations ()
@@ -275,6 +309,20 @@
     (should (string= (getenv "key3") "$orig"))
     (should (string= (getenv "key4") "myinitialvalue"))
     (should (string= (getenv "key5") "initial"))
+    )
+  (let ((process-environment '("orig=initial"))
+        (lst '(" setenv  orig=new"
+               "SET key1=value1 #comment"
+               "set  key2=\"value2\""
+               " SET \"key3=value3\""
+               "SET \"key4=\""
+               )))
+    (parsenv-parse-lines (parsenv-transform-lines lst))
+    (should (string= (getenv "missing") nil))
+    (should (string= (getenv "orig") "new"))
+    (should (string= (getenv "key1") "value1"))
+    (should (string= (getenv "key2") "value2"))
+    (should (string= (getenv "key4") nil))
     )
   )
 

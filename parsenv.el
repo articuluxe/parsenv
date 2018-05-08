@@ -3,7 +3,7 @@
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-03-30 06:34:28 dharms>
+;; Modified Time-stamp: <2018-05-08 15:57:45 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -57,8 +57,9 @@ delimiters."
     line))
 
 (defun parsenv-strip-export (line)
-  "Strip any `export=' prefix from LINE."
-  (if (string-match "^\\s-*export\\s-+" line)
+  "Strip any `export=' prefix from LINE.
+Also supported are tcsh's `setenv' and dos's `set'."
+  (if (string-match "^\\s-*\\(export\\|set\\(env\\)?\\)\\s-+" line)
       (replace-match "" nil nil line)
     line))
 
@@ -141,9 +142,9 @@ Removed lines will be combined with the next element."
 (defun parsenv-load-env (file)
   "Load any environment variables from FILE.
 If a line matches the format of \"export var=value\", then
-`value' is assigned to var.  The `export' part is optional.  Also
-`value' can be missing or empty in order to remove the value of
-`var'."
+`value' is assigned to var.  The `export' part is optional; and
+`setenv' and `set' are also allowed.  Also `value' can be missing
+or empty in order to remove the value of `var'."
   (interactive "fLoad environment variables from file: ")
   (when (file-exists-p file)
     (let ((lst (parsenv-read-file-into-list-of-lines file)))
