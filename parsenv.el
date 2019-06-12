@@ -1,9 +1,9 @@
 ;;; parsenv.el --- parse .env files
-;; Copyright (C) 2017-2018  Dan Harms (dharms)
+;; Copyright (C) 2017-2019  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-05-08 16:32:09 dan.harms>
+;; Modified Time-stamp: <2019-06-12 08:13:14 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -59,7 +59,7 @@ delimiters."
 (defun parsenv-strip-export (line)
   "Strip any `export=' prefix from LINE.
 Also supported are tcsh's `setenv' and dos's `set'."
-  (if (string-match "^\\s-*\\(export\\|set\\(env\\)?\\)\\s-+" line)
+  (if (string-match "^\\s-*\\(export\\|\\(un\\)?set\\(env\\)?\\)\\s-+" line)
       (replace-match "" nil nil line)
     line))
 

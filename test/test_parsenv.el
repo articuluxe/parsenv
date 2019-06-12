@@ -1,11 +1,11 @@
 #!/bin/sh
 ":"; exec "$VISUAL" --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; -*-
 ;;; test_parsenv.el --- test env parse utilties
-;; Copyright (C) 2017-2018  Dan Harms (dharms)
+;; Copyright (C) 2017-2019  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2018-05-08 16:19:08 dan.harms>
+;; Modified Time-stamp: <2019-06-12 08:12:10 dharms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
@@ -310,12 +310,13 @@
     (should (string= (getenv "key4") "myinitialvalue"))
     (should (string= (getenv "key5") "initial"))
     )
-  (let ((process-environment '("orig=initial"))
+  (let ((process-environment '("orig=initial" "orig2=initial2"))
         (lst '(" setenv  orig=new"
                "SET key1=value1 #comment"
                "set  key2=\"value2\""
                " SET \"key3=value3\""
                "SET \"key4=\""
+               "unset orig2"
                )))
     (parsenv-parse-lines (parsenv-transform-lines lst))
     (should (string= (getenv "missing") nil))
@@ -324,6 +325,7 @@
     (should (string= (getenv "key2") "value2"))
     (should (string= (getenv "key3") "value3"))
     (should (string= (getenv "key4") nil))
+    (should (string= (getenv "orig2") nil))
     )
   )
 
