@@ -1,9 +1,9 @@
-;;; parsenv.el --- parse .env files
+;;; parsenv.el --- Parse .env files
 ;; Copyright (C) 2017-2019  Dan Harms (dharms)
 ;; Author: Dan Harms <enniomore@icloud.com>
 ;; Created: Monday, December  4, 2017
 ;; Version: 1.0
-;; Modified Time-stamp: <2019-06-12 08:13:14 dharms>
+;; Modified Time-stamp: <2019-07-24 10:47:50 dan.harms>
 ;; Modified by: Dan Harms
 ;; Keywords: tools
 ;; URL: https://github.com/articuluxe/parsenv.git
