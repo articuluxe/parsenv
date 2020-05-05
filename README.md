@@ -19,7 +19,7 @@ Then, put code such as the following in your init file:
     (use-package parsenv  
      :config  
      (parsenv-load-env (expand-file-name (concat "~/.bash.env")))  
-     (parsenv-adjust-exec-path))`
+     (parsenv-adjust-exec-path))
   
 ## Commands ##
 
@@ -33,8 +33,8 @@ Here are a few of the formats that will work:
     c=three #comments are discarded  
     d="four"  
     e="five-$a"  
-    f=six-$a'  
-    g="with-#-mark" #quotes inhibit comments`  
+    f='six-$a'  
+    g="with-#-mark" #quotes inhibit comments  
 
 These result in the following *process-environment*:
 
@@ -45,8 +45,8 @@ These result in the following *process-environment*:
 | c        | three       |
 | d        | four        |
 | e        | five-one    |
-| f        | six=$a      |
-| g        | with=#=mark |
+| f        | six-$a      |
+| g        | with-#-mark |
 
 Note that environment variables are expanded within double-quotes, but not single-quotes.
 
